@@ -5,7 +5,7 @@ from app.cities.models import City
 from app.cities.schemas import CityCreate, CityUpdate
 
 
-async def get_all_cities(db: AsyncSession) -> list[City]:
+async def get_cities(db: AsyncSession) -> list[City]:
     stmt = select(City)
     result = await db.execute(stmt)
     return result.scalars().all()
@@ -26,6 +26,7 @@ async def create_city(db: AsyncSession, city_data: CityCreate) -> City:
         name=city_data.name,
         latitude=city_data.latitude,
         longitude=city_data.longitude,
+        additional_info=city_data.additional_info,
     )
     db.add(city)
     await db.commit()
@@ -38,12 +39,8 @@ async def update_city(
     city: City,
     city_data: CityUpdate
 ) -> City:
-    if city_data.name is not None:
-        city.name = city_data.name
-    if city_data.latitude is not None:
-        city.latitude = city_data.latitude
-    if city_data.longitude is not None:
-        city.longitude = city_data.longitude
+    for key, value in city_data.model_dump(exclude_unset=True).items():
+        setattr(city, key, value)
 
     await db.commit()
     await db.refresh(city)

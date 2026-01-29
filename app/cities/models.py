@@ -10,6 +10,8 @@ class City(Base):
     name: Mapped[str] = mapped_column(String(100), unique=True, index=True)
     latitude: Mapped[float] = mapped_column(Float, nullable=False)
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    additional_info: Mapped[str | None] = mapped_column(String, nullable=True)
+
     temperatures: Mapped[list["Temperature"]] = relationship(
         back_populates="city",
         cascade="all, delete",

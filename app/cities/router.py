@@ -16,6 +16,12 @@ async def create_city(
 ):
     return await crud.create_city(db, city_data)
 
+@router.get("/", response_model=list[CityRead])
+async def read_cities(
+    db: Annotated[AsyncSession, Depends(get_db)]
+):
+    return await crud.get_cities(db)
+
 
 @router.get("/{city_id}", response_model=CityRead)
 async def read_city(

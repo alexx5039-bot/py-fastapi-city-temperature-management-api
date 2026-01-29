@@ -14,4 +14,4 @@ class TemperatureRead(TemperatureBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    recorded_at: datetime
+    date_time: datetime

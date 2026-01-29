@@ -1,4 +1,3 @@
-import datetime
 
 from sqlalchemy import ForeignKey, Float, func, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -12,7 +11,7 @@ class Temperature(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     temperature: Mapped[float] = mapped_column(Float)
     city_id: Mapped[int] = mapped_column(ForeignKey("cities.id"))
-    recorded_at: Mapped[datetime] = mapped_column(
+    date_time: Mapped[datetime] = mapped_column(
         DateTime,
         server_default=func.now(),
         nullable=False

@@ -54,28 +54,25 @@ app/
 
 ## ▶️ How to Run the Application
 
-### 1️⃣ Create and activate virtual environment
-```bash
-python -m venv .venv
-source .venv/bin/activate   # macOS / Linux
-.venv\Scripts\activate      # Windows
 
-2️⃣ Install dependencies
-pip install fastapi uvicorn sqlalchemy aiosqlite httpx
+1 Install dependencies
+pip install -r requirements.txt
 
-3️⃣ Initialize database
-python app/db/init_db.py
+2 Run migrations
+alembic upgrade head
 
-4️⃣ Run the application
-python -m uvicorn app.main:app --reload
+3 Run the application
+uvicorn app.main:app --reload
 
-5️⃣ Open API documentation
+4 Open API documentation
 http://127.0.0.1:8000/docs
 
 📌 API Endpoints
 Cities
 
 POST /cities/ — create a city
+
+GET /cities/ - get a list of all cities
 
 GET /cities/{id} — get city by ID
 

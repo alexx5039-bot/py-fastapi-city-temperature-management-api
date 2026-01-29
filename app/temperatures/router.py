@@ -1,7 +1,7 @@
 from typing import Annotated
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.temperatures.models import Temperature
 
 from app.db.session import get_db
 from app.cities.models import City
@@ -27,7 +27,7 @@ async def update_temperatures(
         result = await db.scalars(select(City))
         cities = result.all()
 
-        created = 0
+        temperatures: list[Temperature] = []
 
         for city in cities:
             temperature = await fetch_current_temperature(
@@ -35,19 +35,21 @@ async def update_temperatures(
                 city.longitude,
             )
 
-            await crud.create_temperature(
-                db=db,
-                city_id=city.id,
-                temperature=temperature,
+            temperatures.append(
+                Temperature(
+                    city_id=city.id,
+                    temperature=temperature,
+                )
             )
 
-            created += 1
+        db.add_all(temperatures)
+        await db.commit()
 
         return {
             "status": "ok",
-            "records_created": created,
+            "records_created": len(temperatures),
         }
 
-    except Exception as e:
+    except Exception:
         await db.rollback()
-        raise e
+        raise
